@@ -1,0 +1,39 @@
+#khung-ban-co-1{
+	border-right: none;
+	border-bottom: none;
+}
+.khung-ban-co{
+	background-color: white;
+	border: solid 0.5px;
+	width: 501px;
+	height: 390px;
+	text-align: center;
+	position: relative;
+}
+.notice-result{
+	display: none;
+	position: absolute;
+	opacity: 1 !important;
+    top: 40%;
+	left: 170px;
+	cursor: default;
+}
+.div-option{
+	position: absolute;
+	top: 0;
+	left: 540px;
+}
+.khung-co{
+	margin-bottom: 0px !important;
+	border-top: none;
+	border-left: none;
+	width: 4%;
+	height: 5.11%;
+	position: static;
+	float: left;
+	background-size: 19px 19px;
+	cursor: pointer;
+}
+.khung-co:hover{
+	background-color: rgb(219, 219, 219) !important;
+}
