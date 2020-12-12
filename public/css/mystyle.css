@@ -37,3 +37,8 @@
 .khung-co:hover{
 	background-color: rgb(219, 219, 219) !important;
 }
+.p-wait-player{
+	float: right;
+	padding: 5px;
+	font-weight: bold;
+}

@@ -1,9 +1,6 @@
 <!doctype html>
 <html lang="en">
-    <script src="socket.io/socket.io.js"></script>
-    <script>
-        let socket = io();
-    </script>
+    <script defer src="socket.io/socket.io.js"></script>
   <%- include('masterPage/head.ejs'); -%>
   <body>
     <%- include('masterPage/narbar.ejs'); -%>
@@ -22,7 +19,8 @@
             </div>
             <h3 class="notice-result"></h3>
             <div class="div-option">
-              <button id="btn-play-gomoku" type="button" class="btn btn-success btn-play">Chơi Lại</button>
+              <button id="btn-ready-gomoku" type="button" class="unready btn btn-success btn-play">Sẵn sàng</button>
+              <p class="p-wait-player">Đang chờ đối thủ </p>
             </div>
           </div>
           <button id="clickme">click  s</button>
@@ -34,8 +32,8 @@
     
     <!--myscript-->
     <script defer src="plugins/jquery/jquery.js"></script>
-    <script defer src="js/event.js"></script>
     <script defer src="js/processGomokuOnline.js"></script>
+    <script defer src="js/event.js"></script>
 
     <%- include('masterPage/bottom.ejs'); -%>
   </body>

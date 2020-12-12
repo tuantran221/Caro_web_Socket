@@ -2,7 +2,8 @@
     let x = 20,y=25;
     let checkLine = -1;
     let gameFinish = true;
-    let gameStop = false;
+    let gameStop = true;
+    let listPlayer = [];
     let arrChess = new Array(x);
     let xflag = true;
     for(let i=0;i<x;i++){
@@ -15,12 +16,10 @@
             $("#pos-"+i+"-"+j).click(function() {
                 if(gameFinish==false && checkAlClick(i,j)==true){
                     if(xflag == true){
-                        xflag = false;
                         $("#pos-"+i+"-"+j).css('background-image', 'url("Images/X-chess.png")');
                         arrChess[i][j] = 1;
                         
                     }else{
-                        xflag = true;
                         $("#pos-"+i+"-"+j).css('background-image', 'url("Images/O-chess.png")');
                         arrChess[i][j] = 0;
                     }
