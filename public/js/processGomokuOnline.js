@@ -4,6 +4,7 @@
     let gameFinish = true;
     let gameStop = true;
     let listPlayer = [];
+    let unableBtnPlay = false;
     let arrChess = new Array(x);
     let xflag = true;
     for(let i=0;i<x;i++){
@@ -15,23 +16,15 @@
             }).appendTo('#khung-ban-co-1');
             $("#pos-"+i+"-"+j).click(function() {
                 if(gameFinish==false && checkAlClick(i,j)==true){
-                    if(xflag == true){
-                        $("#pos-"+i+"-"+j).css('background-image', 'url("Images/X-chess.png")');
-                        arrChess[i][j] = 1;
-                        
-                    }else{
-                        $("#pos-"+i+"-"+j).css('background-image', 'url("Images/O-chess.png")');
-                        arrChess[i][j] = 0;
-                    }
-                    findPlayerWin();
                     sendDataToServer(i,j);
+                    findPlayerWin();
                     gameFinish = true;
                 }
             });
         }
     }
     function sendDataToServer(i,j){
-        socket.emit("client-send-locateXO",{x:i,y:j});
+        socket.emit("client-send-locateXO",{xflag:xflag,x:i,y:j});
     }
     function findPlayerWin(){
         let player = -1;
@@ -57,12 +50,22 @@
             $(".notice-result").text("O chiến thắng!!");
             $(".notice-result").css("display", "block");
             gameStop = true;
+            unableBtnPlay = false;
+            setupStart();
             jQuery("#khung-ban-co-1").css('opacity', '0.6');
+            if(xflag==false){
+                socket.emit("client-send-winner");
+            }
         }else if(player==1){
             $(".notice-result").text("X chiến thắng!!");
             $(".notice-result").css("display", "block");
             gameStop = true;
+            unableBtnPlay = false;
+            setupStart();
             jQuery("#khung-ban-co-1").css('opacity', '0.6');
+            if(xflag==true){
+                socket.emit("client-send-winner");
+            }
         }
     }
     function checkWin(c,i,j){
@@ -172,6 +175,9 @@
             arrChess[i] = new Array(y); 
         }
         checkLine = -1;
-        gameFinish = false;
-        xflag = true;
+    }
+    function setupStart(){
+        $("#btn-ready-gomoku-online").addClass("unready").removeClass("ready");
+        $("#btn-ready-gomoku-online").text("Sẵn sàng");
+        $(".p-wait-player").text("Đang chờ đối thủ..");
     }
