@@ -3,8 +3,9 @@
     let checkLine = -1;
     let gameFinish = true;
     let gameStop = true;
+    let idRoom = "";    
     let listPlayer = [];
-    let unableBtnPlay = false;
+    let unableBtnPlay = true;
     let arrChess = new Array(x);
     let xflag = true;
     for(let i=0;i<x;i++){
@@ -49,22 +50,30 @@
         if(player==0){
             $(".notice-result").text("O chiến thắng!!");
             $(".notice-result").css("display", "block");
-            gameStop = true;
-            unableBtnPlay = false;
-            setupStart();
             jQuery("#khung-ban-co-1").css('opacity', '0.6');
-            if(xflag==false){
-                socket.emit("client-send-winner");
+            if(isWatchOnly(socket.id)==false){
+                gameStop = true;
+                unableBtnPlay = false;
+                setupStart();
+                if(xflag==false){
+                    socket.emit("client-send-winner");
+                }
+            }else{//neu la nguoi xem thi khong can cap nhat len server
+                unableBtnPlay = true;
             }
         }else if(player==1){
             $(".notice-result").text("X chiến thắng!!");
             $(".notice-result").css("display", "block");
-            gameStop = true;
-            unableBtnPlay = false;
-            setupStart();
             jQuery("#khung-ban-co-1").css('opacity', '0.6');
-            if(xflag==true){
-                socket.emit("client-send-winner");
+            if(isWatchOnly(socket.id)==false){
+                gameStop = true;
+                unableBtnPlay = false;
+                setupStart();
+                if(xflag==true){
+                    socket.emit("client-send-winner");
+                }
+            }else{//neu la nguoi xem thi khong can cap nhat len server
+                unableBtnPlay = true;
             }
         }
     }
@@ -175,9 +184,12 @@
             arrChess[i] = new Array(y); 
         }
         checkLine = -1;
+        unableBtnPlay = true;
+        gameFinish = true;
     }
     function setupStart(){
         $("#btn-ready-gomoku-online").addClass("unready").removeClass("ready");
+        $("#btn-ready-gomoku-online").removeClass("btn-warning").addClass("btn-success");
         $("#btn-ready-gomoku-online").text("Sẵn sàng");
         $(".p-wait-player").text("Đang chờ đối thủ..");
     }

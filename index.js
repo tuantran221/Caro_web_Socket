@@ -35,7 +35,7 @@ io.on("connection",function(socket){
     listPlayer.push(socket.id);
     console.log("co nguoi ket noi!!"+socket.id);
     socket.emit("client-get-player",{gameFinish:gameFinish,listPlayer:listPlayer});
-    socket.broadcast.emit("clients-get-listPlayer",{listPlayer:listPlayer});
+    socket.broadcast.emit("clients-get-new-player",{listPlayer:listPlayer});
     //
     if(gameFinish==false){
         gameFinish = true;
@@ -55,7 +55,7 @@ io.on("connection",function(socket){
     socket.on("disconnect",function(){
         //
         delPlayer(socket.id);
-        io.sockets.emit("clients-get-listPlayer",{listPlayer:listPlayer});
+        io.sockets.emit("clients-get-delete-player",{listPlayer:listPlayer});
         console.log("co nguoi thoat!!"+socket.id);
     });
     socket.on("client-send-ready-play",function(data){
@@ -65,6 +65,11 @@ io.on("connection",function(socket){
             io.sockets.emit("clients-can-play",{playing:true});
         }
         console.log("Nguoi choi da san sang!!"+socket.id);
+    });
+    socket.on("client-request-reload-game",function(data){
+        //
+        reloadDataGame();
+        io.sockets.emit("server-send-reload-game-success");
     });
     socket.on("client-send-winner",function(data){
         //
@@ -86,7 +91,7 @@ function delPlayer(idPlayer){
         }
     }
     if(vt>=0){
-        listPlayer = listPlayer.splice(vt+1,1);
+        listPlayer.splice(vt,1);
     }
 }
 function isPlaying(idPlayer,ready){
@@ -97,9 +102,17 @@ function isPlaying(idPlayer,ready){
         }
     }
     if(vt==0){
-        player1Ready = true;
+        if(ready==true){
+            player1Ready = true;
+        }else{
+            player1Ready = false;
+        }
     }else if(vt==1){
-        player2Ready = true;
+        if(ready==true){
+            player2Ready = true;
+        }else{
+            player2Ready = false;
+        }
     }else{
         vt = -1;
     }
@@ -117,10 +130,21 @@ function updateDataGame(xflag,x,y){
     }
 }
 function reloadDataGame(){
+    player1Ready = false;
+    player2Ready=false;
     //reset arr
     arrChess.slice(0,x);
     arrChess = new Array(x);
     for(let i=0;i<x;i++){
         arrChess[i] = new Array(y); 
     }
+}
+function orderPlayer(idPlayer){
+    let vt=-1;
+    for(let i=0;i<listPlayer.length;i++){
+        if(idPlayer == listPlayer[i]){
+            vt = i;break;
+        }
+    }
+    return vt;
 }
