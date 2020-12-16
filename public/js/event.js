@@ -129,6 +129,7 @@ function checkPlayer(){
 }
 function watchOnly(idPlayer){
     let vt=orderPlayer(idPlayer);
+    showListPlayer(listPlayer);
     if(vt>=0 && vt<=1){
         unableBtnPlay = false;
         return false;
@@ -146,6 +147,12 @@ function canPlayStatus(){
     }else{
         $(".p-wait-player").text("Đang chờ đối thủ sẵn sàng..");
     }
+}
+function showListPlayer(idPlayer){
+    $("#div-list-player").html("");
+    idPlayer.forEach(element => {
+        $("#div-list-player").append('<div class="player">'+ element +'</div>');
+    });
 }
 function findPlayerStatus(){
     $(".p-wait-player").text("Đang tìm đối thủ..");
@@ -187,6 +194,7 @@ function loadDataGame(){
 }
 function isWatchOnly(idPlayer){
     let vt=orderPlayer(idPlayer);
+    showListPlayer(listPlayer);
     if(vt>1||vt==-1){
         unableBtnPlay = true;
         return true;

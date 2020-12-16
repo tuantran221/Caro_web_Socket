@@ -42,3 +42,12 @@
 	padding: 5px;
 	font-weight: bold;
 }
+#div-list-player{
+	border: 1px solid;
+	width: 200px;
+	margin-top: 5px;
+	height: 200px;
+}
+.player{
+	font-size: 12px;
+}
