@@ -9,6 +9,9 @@ server.listen(3000);
 app.get("/playonlinegomoku",function(req,res){
     res.render("gomokuOnline",{page:"gomokuOnline"});
 });
+app.get("/listtablegomokuonline",function(req,res){
+    res.render("listTableGomokuOnline",{page:"listTableGomokuOnline"});
+});
 app.get("/",function(req,res){
     res.render("trangchu",{page:"gomoku2Player"});
 });
