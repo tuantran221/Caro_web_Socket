@@ -4,7 +4,7 @@
 }
 .khung-ban-co{
 	background-color: white;
-	border: solid 0.5px;
+	border: solid 0.5px gray;
 	width: 501px;
 	height: 390px;
 	text-align: center;
@@ -43,7 +43,7 @@
 	font-weight: bold;
 }
 #div-list-player{
-	border: 1px solid;
+	border: 1px solid gray;
 	width: 200px;
 	margin-top: 5px;
 	height: 200px;

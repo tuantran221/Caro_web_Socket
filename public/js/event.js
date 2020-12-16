@@ -27,7 +27,7 @@ socket.on("server-send-data-for-all",function(data){
     let i=data.x,j=data.y;
         if(isWatchOnly(socket.id)==false){
             if(data.xflag == true){
-                $("#pos-"+i+"-"+j).css('background-image', 'url("Images/X-chess.png")');
+                $("#pos-"+i+"-"+j).css('background-image', 'url("Images/X-chess-color.png")');
                 arrChess[i][j] = 1;
                 if(xflag==true){
                     gameFinish = true;
@@ -35,7 +35,7 @@ socket.on("server-send-data-for-all",function(data){
                     gameFinish = false;
                 }
             }else{
-                $("#pos-"+i+"-"+j).css('background-image', 'url("Images/O-chess.png")');
+                $("#pos-"+i+"-"+j).css('background-image', 'url("Images/O-chess-color.png")');
                 arrChess[i][j] = 0;
                 if(xflag==false){
                     gameFinish = true;
@@ -46,10 +46,10 @@ socket.on("server-send-data-for-all",function(data){
             findPlayerWin();
         }else{//
             if(data.xflag == true){
-                $("#pos-"+i+"-"+j).css('background-image', 'url("Images/X-chess.png")');
+                $("#pos-"+i+"-"+j).css('background-image', 'url("Images/X-chess-color.png")');
                 arrChess[i][j] = 1;
             }else{
-                $("#pos-"+i+"-"+j).css('background-image', 'url("Images/O-chess.png")');
+                $("#pos-"+i+"-"+j).css('background-image', 'url("Images/O-chess-color.png")');
                 arrChess[i][j] = 0;
             }
             findPlayerWin();
@@ -184,9 +184,9 @@ function loadDataGame(){
     for(let i=0;i<x;i++){
         for(let j=0;j<y;j++){
             if(arrChess[i][j]==0){
-                $("#pos-"+i+"-"+j).css('background-image', 'url("Images/O-chess.png")');
+                $("#pos-"+i+"-"+j).css('background-image', 'url("Images/O-chess-color.png")');
             }else if(arrChess[i][j]==1){
-                $("#pos-"+i+"-"+j).css('background-image', 'url("Images/X-chess.png")');
+                $("#pos-"+i+"-"+j).css('background-image', 'url("Images/X-chess-color.png")');
             }
         }
     }
