@@ -18,11 +18,20 @@ app.get("/",function(req,res){
 //io
 let gameFinish = false;
 let listPlayer = [];
+let listPlayerName = [];
 let player1Ready = false,player2Ready = false;
 let x = 20,y=25;
 let arrChess = new Array(x);
 for(let i=0;i<x;i++){
     arrChess[i] = new Array(y); 
+}
+//
+let roomNum = 12;
+let arrRoom = new Array(roomNum);
+for(let i=0;i<roomNum;i++){
+    arrRoom[i] = new Array(2);
+    arrRoom[i][0] = new Array();
+    arrRoom[i][1] = new Array();
 }
 for(let i=0;i<x;i++){
     for(let j=0;j<y;j++){
@@ -35,7 +44,7 @@ for(let i=0;i<x;i++){
 }
 io.on("connection",function(socket){
     //socket call
-    listPlayer.push(socket.id);
+    listPlayer.push(socket.id);listPlayerName.push("");
     console.log("co nguoi ket noi!!"+socket.id);
     socket.emit("client-get-player",{gameFinish:gameFinish,listPlayer:listPlayer});
     socket.broadcast.emit("clients-get-new-player",{listPlayer:listPlayer});
@@ -51,6 +60,14 @@ io.on("connection",function(socket){
         updateDataGame(data.xflag,data.x,data.y);
         let xTurn = true;
         io.sockets.emit("server-send-data-for-all",data);
+    });
+    socket.on("client-send-username",function(data){
+        let status = checkUsername(data.username,socket.id);
+        if(status==true){
+            socket.emit("server-send-signin-status",{status:status,username:data.username});
+        }else{
+            socket.emit("server-send-signin-status",{status:status});
+        }
     });
     socket.on("client-request-datagame",function(){
         socket.emit("client-get-datagame",{arrChess:arrChess});
@@ -74,6 +91,12 @@ io.on("connection",function(socket){
         reloadDataGame();
         io.sockets.emit("server-send-reload-game-success");
     });
+    socket.on("client-join-room",function(data){
+        //
+        arrRoom[data.idRoom][0].push(data.idPlayer);
+        arrRoom[data.idRoom][1].push(data.username);
+        io.sockets.emit("clients-update-list-room",{arrRoom:arrRoom});
+    });
     socket.on("client-send-winner",function(data){
         //
         if(listPlayer.length>=2){
@@ -95,6 +118,7 @@ function delPlayer(idPlayer){
     }
     if(vt>=0){
         listPlayer.splice(vt,1);
+        listPlayerName.splice(vt,1);
     }
 }
 function isPlaying(idPlayer,ready){
@@ -150,4 +174,21 @@ function orderPlayer(idPlayer){
         }
     }
     return vt;
+}
+function checkUsername(username,idPlayer){
+    if(username.length > 0 && username.length <= 20 && addUsername(username,idPlayer)==true){
+        return true;
+    }else{
+        return false;
+    }
+}
+function addUsername(username,idPlayer){
+    let vt = listPlayer.indexOf(idPlayer);
+    let containName = listPlayerName.indexOf(username);
+    if(vt>-1 && containName==-1){
+        listPlayerName[vt] = username;
+        return true;
+    }else{
+        return false;
+    }
 }

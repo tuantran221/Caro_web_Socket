@@ -2,6 +2,9 @@
 	border-right: none;
 	border-bottom: none;
 }
+#btn-sign-in{
+	cursor: pointer;
+}
 .khung-ban-co{
 	background-color: white;
 	border: solid 0.5px gray;
@@ -17,6 +20,12 @@
     top: 40%;
 	left: 170px;
 	cursor: default;
+}
+.notice-error{
+	color: rgb(185, 14, 14);
+	margin-bottom: 0px;
+	padding-top: 5px;
+	display: none;
 }
 .div-option{
 	position: absolute;
