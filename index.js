@@ -46,13 +46,13 @@ io.on("connection",function(socket){
     //socket call
     listPlayer.push(socket.id);listPlayerName.push("");
     console.log("co nguoi ket noi!!"+socket.id);
-    socket.emit("client-get-player",{gameFinish:gameFinish,listPlayer:listPlayer});
-    socket.broadcast.emit("clients-get-new-player",{listPlayer:listPlayer});
+    //socket.emit("client-get-player",{gameFinish:gameFinish,listPlayer:listPlayer});
+    //socket.broadcast.emit("clients-get-new-player",{listPlayer:listPlayer});
     //
-    if(gameFinish==false){
-        gameFinish = true;
-    }
     //socket listen
+    socket.on("client-request-list-player",function(data){
+        
+    });
     socket.on("client-send-data",function(data){
         console.log(data);
     });
@@ -74,8 +74,10 @@ io.on("connection",function(socket){
     });
     socket.on("disconnect",function(){
         //
-        delPlayer(socket.id);
-        io.sockets.emit("clients-get-delete-player",{listPlayer:listPlayer});
+        idRoomNumber = delPlayer(socket.id);
+        if(idRoomNumber != -1){
+            io.to(idRoomNumber+"").emit("clients-get-delete-player",{listPlayer:arrRoom[idRoomNumber][1]});
+        }
         console.log("co nguoi thoat!!"+socket.id);
     });
     socket.on("client-send-ready-play",function(data){
@@ -93,9 +95,16 @@ io.on("connection",function(socket){
     });
     socket.on("client-join-room",function(data){
         //
-        arrRoom[data.idRoom][0].push(data.idPlayer);
-        arrRoom[data.idRoom][1].push(data.username);
-        io.sockets.emit("clients-update-list-room",{arrRoom:arrRoom});
+        socket.join(data.idRoomNumber+"");
+        arrRoom[data.idRoomNumber][0].push(socket.id);
+        arrRoom[data.idRoomNumber][1].push(data.username);
+        let xflag = false;
+        if(orderPlayer(socket.id,data.idRoomNumber)==0){
+            xflag = true;
+        }else{
+            xflag = false;
+        }
+        io.to(data.idRoomNumber+"").emit("clients-get-new-player",{gameFinish:gameFinish,xflag:xflag,listPlayer:arrRoom[data.idRoomNumber][1]});
     });
     socket.on("client-send-winner",function(data){
         //
@@ -120,6 +129,19 @@ function delPlayer(idPlayer){
         listPlayer.splice(vt,1);
         listPlayerName.splice(vt,1);
     }
+    let vtP = -1;vt = -1;
+    for(let i=0;i<arrRoom.length;i++){
+        for(let j=0;j<arrRoom[i][0].length;j++){
+            if(arrRoom[i][0][j]==idPlayer){
+                vtP = i;vt = j;break;
+            }
+        }
+    }
+    if(vtP>=0 && vt>=0){
+        arrRoom[vtP][0].splice(vt,1);
+        arrRoom[vtP][1].splice(vt,1);
+    }
+    return vtP;
 }
 function isPlaying(idPlayer,ready){
     let vt = -1;
@@ -166,10 +188,10 @@ function reloadDataGame(){
         arrChess[i] = new Array(y); 
     }
 }
-function orderPlayer(idPlayer){
+function orderPlayer(idPlayer,vtP){
     let vt=-1;
-    for(let i=0;i<listPlayer.length;i++){
-        if(idPlayer == listPlayer[i]){
+    for(let i=0;i<arrRoom[vtP][0].length;i++){
+        if(idPlayer == arrRoom[vtP][0][i]){
             vt = i;break;
         }
     }

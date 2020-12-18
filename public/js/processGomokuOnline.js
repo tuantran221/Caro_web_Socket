@@ -3,11 +3,13 @@
     let checkLine = -1;
     let gameFinish = true;
     let gameStop = true;
-    let idRoom = "";    
+    let idRoom = "";
     let listPlayer = [];
     let unableBtnPlay = true;
     let arrChess = new Array(x);
     let xflag = true;
+    //create socket
+    //let socket = io();//setup socket
     for(let i=0;i<x;i++){
         arrChess[i] = new Array(y); 
         for(let j=0;j<y;j++){

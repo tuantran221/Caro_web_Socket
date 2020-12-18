@@ -6,7 +6,6 @@ $("#btn-ready-gomoku").click(function(){
     restartGame();
 });
 ///
-let socket = io();//setup socket
 $("#btn-ready-gomoku-online").click(function(){
     if(unableBtnPlay == false){
         if($("#btn-ready-gomoku-online").hasClass("unready")==true){
@@ -55,7 +54,7 @@ socket.on("server-send-data-for-all",function(data){
             findPlayerWin();
         }
 });
-socket.on("client-get-player",function(data){
+/*socket.on("client-get-player",function(data){
     gameFinish = data.gameFinish;
     listPlayer = data.listPlayer;
     if(isWatchOnly(socket.id)==false){
@@ -69,11 +68,20 @@ socket.on("client-get-player",function(data){
     }else{
         xflag = false;
     }
-});
+});*/
 socket.on("clients-get-new-player",function(data){
+    gameFinish = data.gameFinish;
     listPlayer = data.listPlayer;
     if(isWatchOnly(socket.id)==false && listPlayer.length <= 2){
         checkPlayer();
+    }else{
+        watchOnlyStatus();
+        socket.emit("client-request-datagame");
+    }
+    if(data.xflag==false){
+        gameFinish = true;
+    }else{
+        gameFinish = false;
     }
 });
 socket.on("clients-get-delete-player",function(data){
@@ -86,6 +94,7 @@ socket.on("clients-get-delete-player",function(data){
     }else{
         reloadGame(socket.id);
     }
+    showListPlayer(listPlayer);
 });
 socket.on("clients-can-play",function(data){
     idRoom = listPlayer[0]+listPlayer[1];
@@ -148,9 +157,9 @@ function canPlayStatus(){
         $(".p-wait-player").text("Đang chờ đối thủ sẵn sàng..");
     }
 }
-function showListPlayer(idPlayer){
+function showListPlayer(listPlayer){
     $("#div-list-player").html("");
-    idPlayer.forEach(element => {
+    listPlayer.forEach(element => {
         $("#div-list-player").append('<div class="player">'+ element +'</div>');
     });
 }

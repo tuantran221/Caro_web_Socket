@@ -1,5 +1,5 @@
+let socket = io();//setup socket
 $(document).ready(function(){
-    let socket = io();//setup socket
     let username = "";
     //
     let roomNum = 12;
@@ -23,7 +23,8 @@ $(document).ready(function(){
         $("#my-div-table-id-"+i).click(function(){
             let idRoom = i-1;
             if(username!=""){
-                socket.emit("client-join-room",{idRoom:idRoom,idPlayer:socket.id,username:username});
+                socket.emit("client-join-room",{idRoomNumber:idRoom,username:username});
+                openRoom();
             }
         })
     }
@@ -34,7 +35,6 @@ $(document).ready(function(){
             let helloName = "Xin chào "+ data.username;
             $("#btn-cancel-login").click();
             $("#btn-sign-in").addClass("hello-name").text(helloName);
-            alert("Đăng ký thành công");
         }else{
             let textError = "Có lỗi, có thể do trùng tên hoặc tên của bạn không đúng định dạng.";
             $(".notice-error").text(textError).show();
@@ -57,3 +57,11 @@ $(document).ready(function(){
         }
     }
 });
+function openRoom(){
+    $("#main-list-room").hide();
+    $("#main-room").show();
+}
+function openListRoom(){
+    $("#main-list-room").show();
+    $("#main-room").hide();
+}
