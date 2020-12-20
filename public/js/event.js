@@ -13,12 +13,12 @@ $("#btn-ready-gomoku-online").click(function(){
             $("#btn-ready-gomoku-online").removeClass("btn-success").addClass("btn-warning");
             $("#btn-ready-gomoku-online").text("Hủy sẵn sàng");
             canPlayStatus();
-            socket.emit("client-send-ready-play",{ready:true});
+            socket.emit("client-send-ready-play",{ready:true,idRoomNumber:idRoomNumber});
         }else{
             $("#btn-ready-gomoku-online").addClass("unready").removeClass("ready");
             $("#btn-ready-gomoku-online").removeClass("btn-warning").addClass("btn-success");
             $("#btn-ready-gomoku-online").text("Sẵn sàng");
-            socket.emit("client-send-ready-play",{ready:false});
+            socket.emit("client-send-ready-play",{ready:false,idRoomNumber:idRoomNumber});
         }
     }
 });
@@ -70,47 +70,43 @@ socket.on("server-send-data-for-all",function(data){
     }
 });*/
 socket.on("clients-get-new-player",function(data){
-    gameFinish = data.gameFinish;
     listPlayer = data.listPlayer;
-    if(isWatchOnly(socket.id)==false && listPlayer.length <= 2){
-        checkPlayer();
+    listPlayerName = data.listPlayerName;
+    if(socket.id==data.idPlayer){
+        reloadGame(socket.id);
+        if(listPlayer.length>2){//nguoi xem lay du lieu
+            socket.emit("client-request-datagame",{idRoomNumber:idRoomNumber});
+        }
     }else{
-        watchOnlyStatus();
-        socket.emit("client-request-datagame");
+        checkPlayer(socket.id);
     }
-    if(data.xflag==false){
-        gameFinish = true;
-    }else{
-        gameFinish = false;
-    }
+    showListPlayer(listPlayerName);
 });
 socket.on("clients-get-delete-player",function(data){
     listPlayer = data.listPlayer;
+    listPlayerName = data.listPlayerName;
     if(listPlayer.length >= 2){
         let currentIdRoom = listPlayer[0]+listPlayer[1];
         if(idRoom != currentIdRoom){
             reloadGame(socket.id);
         }
     }else{
-        reloadGame(socket.id);
+        socket.emit("client-request-reload-game",{idRoomNumber:idRoomNumber});
     }
-    showListPlayer(listPlayer);
+    showListPlayer(listPlayerName);
 });
 socket.on("clients-can-play",function(data){
     idRoom = listPlayer[0]+listPlayer[1];
     if(watchOnly(socket.id)==false){
         restartGame();
-        gameStop = false;
-        unableBtnPlay = true;
-        if(xflag == true){
-            gameFinish = false;
-        }else{
-            gameFinish = true;
-        }
-        $(".p-wait-player").text("Đang chơi..");
+        playingStatus();
     }else{
         restartGame();
     }
+});
+socket.on("server-send-leave-room-success",function(data){
+    idRoomNumber = -1;
+    leaveRoom();
 });
 socket.on("client-get-datagame",function(data){
     arrChess = data.arrChess;
@@ -123,22 +119,27 @@ socket.on("server-send-player-go-first",function(data){
         xflag = false;
     }
 });
-socket.on("server-send-reload-game-success",function(){
-    if(isWatchOnly(socket.id)==false && listPlayer.length >= 2){
-        unableBtnPlay = false;
-    }
+socket.on("server-send-reload-game-success",function(data){
+    arrChess = data.arrChess;
+    reloadGame(socket.id);
+
 });
-function checkPlayer(){
-    if(listPlayer.length>=2){
+function checkPlayer(idPlayer){
+    if(listPlayer.length==2){
         unableBtnPlay = false;
         canPlayStatus();
-    }else{
+    }else if(listPlayer.length>2){
+        if(orderPlayer(idPlayer)>1){
+            watchOnlyStatus();
+        }
+    }
+    else{
+        unableBtnPlay = true;
         findPlayerStatus();
     }
 }
 function watchOnly(idPlayer){
     let vt=orderPlayer(idPlayer);
-    showListPlayer(listPlayer);
     if(vt>=0 && vt<=1){
         unableBtnPlay = false;
         return false;
@@ -151,42 +152,57 @@ function watchOnly(idPlayer){
     }
 }
 function canPlayStatus(){
+    unableBtnPlay = false;
     if($("#btn-ready-gomoku-online").hasClass("unready")==true){
-        $(".p-wait-player").text("Tìm thấy người chơi. Hãy sẵn sàng..");
+        $(".p-player-status").text("Tìm thấy người chơi. Hãy sẵn sàng..");
     }else{
-        $(".p-wait-player").text("Đang chờ đối thủ sẵn sàng..");
+        $(".p-player-status").text("Đang chờ đối thủ sẵn sàng..");
     }
 }
-function showListPlayer(listPlayer){
-    $("#div-list-player").html("");
-    listPlayer.forEach(element => {
-        $("#div-list-player").append('<div class="player">'+ element +'</div>');
-    });
+function playingStatus(){
+    gameStop = false;
+    unableBtnPlay = true;
+    if(xflag == true){
+            gameFinish = false;
+    }else{
+        gameFinish = true;
+    }
+    $(".p-player-status").text("Đang chơi..");
 }
 function findPlayerStatus(){
-    $(".p-wait-player").text("Đang tìm đối thủ..");
+    unableBtnPlay = true;
+    gameFinish = true;
+    xflag = true;
+    $("#btn-ready-gomoku-online").text("Sẵn sàng");
+    $(".p-player-status").text("Đang tìm đối thủ..");
 }
 function watchOnlyStatus(){
+    gameStop = true;
     $("#btn-ready-gomoku-online").text("Chỉ xem..");
     $("#btn-ready-gomoku-online").removeClass("btn-success").addClass("btn-warning");
-    $(".p-wait-player").text("");
+    $(".p-player-status").text("");
 }
 function playerOneStatus(){
     xflag = true;
-    socket.emit("client-request-reload-game");
-    gameFinish = false;
+    gameFinish = true;
     $("#btn-ready-gomoku-online").addClass("unready").removeClass("ready");
     $("#btn-ready-gomoku-online").removeClass("btn-warning").addClass("btn-success");
     $("#btn-ready-gomoku-online").text("Sẵn sàng");
-    $(".p-wait-player").text("Tìm thấy người chơi. Hãy sẵn sàng..");
+    $(".p-player-status").text("Tìm thấy người chơi. Hãy sẵn sàng..");
 }
 function playerTwoStatus(){
     xflag = false;
-    gameFinish = false;
+    gameFinish = true;
     $("#btn-ready-gomoku-online").addClass("unready").removeClass("ready");
     $("#btn-ready-gomoku-online").removeClass("btn-warning").addClass("btn-success");
     $("#btn-ready-gomoku-online").text("Sẵn sàng");
-    $(".p-wait-player").text("Tìm thấy người chơi. Hãy sẵn sàng..");
+    $(".p-player-status").text("Tìm thấy người chơi. Hãy sẵn sàng..");
+}
+function showListPlayer(listPlayerName){
+    $("#div-list-player").html("");
+    listPlayerName.forEach(element => {
+        $("#div-list-player").append('<div class="player">'+ element +'</div>');
+    });
 }
 function loadDataGame(){
     idRoom = listPlayer[0]+listPlayer[1];
@@ -203,7 +219,6 @@ function loadDataGame(){
 }
 function isWatchOnly(idPlayer){
     let vt=orderPlayer(idPlayer);
-    showListPlayer(listPlayer);
     if(vt>1||vt==-1){
         unableBtnPlay = true;
         return true;
@@ -221,14 +236,16 @@ function orderPlayer(idPlayer){
     return vt;
 }
 function reloadGame(idPlayer){
+    restartGame();
     ordPlayer = orderPlayer(idPlayer);
     if(ordPlayer==0){
         playerOneStatus();
+        unableBtnPlay = false;
     }else if(ordPlayer==1){
         playerTwoStatus();
+        unableBtnPlay = false;
     }else{
         watchOnlyStatus();
     }
     checkPlayer();
-    restartGame();
 }

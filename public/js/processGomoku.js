@@ -15,12 +15,12 @@ let xflag = true;
                 if(checkAlClick(i,j)==true){
                     if(xflag == true){
                         xflag = false;
-                        $("#pos-"+i+"-"+j).css('background-image', 'url("Images/X-chess.png")');
+                        $("#pos-"+i+"-"+j).css('background-image', 'url("Images/X-chess-color.png")');
                         arrChess[i][j] = 1;
                         
                     }else{
                         xflag = true;
-                        $("#pos-"+i+"-"+j).css('background-image', 'url("Images/O-chess.png")');
+                        $("#pos-"+i+"-"+j).css('background-image', 'url("Images/O-chess-color.png")');
                         arrChess[i][j] = 0;
                     }
                     findPlayerWin();

@@ -16,31 +16,27 @@ app.get("/",function(req,res){
     res.render("trangchu",{page:"gomoku2Player"});
 });
 //io
-let gameFinish = false;
 let listPlayer = [];
 let listPlayerName = [];
 let player1Ready = false,player2Ready = false;
-let x = 20,y=25;
-let arrChess = new Array(x);
-for(let i=0;i<x;i++){
-    arrChess[i] = new Array(y); 
-}
 //
 let roomNum = 12;
+let x = 20,y=25;
 let arrRoom = new Array(roomNum);
 for(let i=0;i<roomNum;i++){
-    arrRoom[i] = new Array(2);
+    arrRoom[i] = new Array(3);
     arrRoom[i][0] = new Array();
     arrRoom[i][1] = new Array();
+    createDataChess(i);
 }
-for(let i=0;i<x;i++){
-    for(let j=0;j<y;j++){
-        if(arrChess[i][j]==0){
-            $("#pos-"+i+"-"+j).css('background-image', 'url("Images/X-chess.png")');
-        }else if(arrChess[i][j]==1){
-            $("#pos-"+i+"-"+j).css('background-image', 'url("Images/O-chess.png")');
-        }
-    }
+//
+let numStatusPlayer = 2;
+let arrStatusPlayer = [];
+arrStatusPlayer = new Array(roomNum);
+for(let i=0;i<roomNum;i++){
+    arrStatusPlayer[i] = new Array(numStatusPlayer);
+    arrStatusPlayer[i][0] = false;
+    arrStatusPlayer[i][1] = false;
 }
 io.on("connection",function(socket){
     //socket call
@@ -50,16 +46,12 @@ io.on("connection",function(socket){
     //socket.broadcast.emit("clients-get-new-player",{listPlayer:listPlayer});
     //
     //socket listen
-    socket.on("client-request-list-player",function(data){
-        
-    });
     socket.on("client-send-data",function(data){
         console.log(data);
     });
     socket.on("client-send-locateXO",function(data){
-        updateDataGame(data.xflag,data.x,data.y);
-        let xTurn = true;
-        io.sockets.emit("server-send-data-for-all",data);
+        updateDataGame(data.idRoomNumber,data.xflag,data.x,data.y);
+        io.to(data.idRoomNumber+"").emit("server-send-data-for-all",data);
     });
     socket.on("client-send-username",function(data){
         let status = checkUsername(data.username,socket.id);
@@ -69,51 +61,70 @@ io.on("connection",function(socket){
             socket.emit("server-send-signin-status",{status:status});
         }
     });
-    socket.on("client-request-datagame",function(){
-        socket.emit("client-get-datagame",{arrChess:arrChess});
+    socket.on("client-request-datagame",function(data){
+        socket.emit("client-get-datagame",{arrChess:arrRoom[data.idRoomNumber][2]});
+    });
+    socket.on("client-want-leave-room",function(){
+        let idRoomNumber  = delPlayer(socket.id);
+        socket.leave(idRoomNumber+"");
+        if(idRoomNumber != -1){
+            io.to(idRoomNumber+"").emit("clients-get-delete-player",{
+                listPlayer:arrRoom[idRoomNumber][0],
+                listPlayerName:arrRoom[idRoomNumber][1]});
+            //
+            io.sockets.emit("clients-update-list-room",{arrRoom:arrRoom});//update number Player per rooms
+        }
+        socket.emit("server-send-leave-room-success");
     });
     socket.on("disconnect",function(){
         //
         idRoomNumber = delPlayer(socket.id);
         if(idRoomNumber != -1){
-            io.to(idRoomNumber+"").emit("clients-get-delete-player",{listPlayer:arrRoom[idRoomNumber][1]});
+            io.to(idRoomNumber+"").emit("clients-get-delete-player",{
+                listPlayer:arrRoom[idRoomNumber][0],
+                listPlayerName:arrRoom[idRoomNumber][1]});
+            //
+            io.sockets.emit("clients-update-list-room",{arrRoom:arrRoom});//update number Player per rooms
         }
         console.log("co nguoi thoat!!"+socket.id);
     });
     socket.on("client-send-ready-play",function(data){
         //
-        if(isPlaying(socket.id,data.ready)==true){
-            reloadDataGame();
-            io.sockets.emit("clients-can-play",{playing:true});
+        if(isPlaying(data.idRoomNumber,socket.id,data.ready)==true){
+            reloadDataGame(data.idRoomNumber);
+            io.to(data.idRoomNumber+"").emit("clients-can-play",{playing:true});
         }
         console.log("Nguoi choi da san sang!!"+socket.id);
     });
     socket.on("client-request-reload-game",function(data){
         //
-        reloadDataGame();
-        io.sockets.emit("server-send-reload-game-success");
+        reloadDataGame(data.idRoomNumber);
+        io.to(data.idRoomNumber+"").emit("server-send-reload-game-success",{arrChess:arrRoom[data.idRoomNumber][2]});
     });
     socket.on("client-join-room",function(data){
         //
-        socket.join(data.idRoomNumber+"");
-        arrRoom[data.idRoomNumber][0].push(socket.id);
-        arrRoom[data.idRoomNumber][1].push(data.username);
-        let xflag = false;
-        if(orderPlayer(socket.id,data.idRoomNumber)==0){
-            xflag = true;
-        }else{
-            xflag = false;
+        if(data.idRoomNumber!=-1){
+            socket.join(data.idRoomNumber+"");
+            arrRoom[data.idRoomNumber][0].push(socket.id);
+            arrRoom[data.idRoomNumber][1].push(data.username);
+            io.to(data.idRoomNumber+"").emit("clients-get-new-player",{
+            idPlayer:socket.id,
+            listPlayer:arrRoom[data.idRoomNumber][0],
+            listPlayerName:arrRoom[data.idRoomNumber][1]});
         }
-        io.to(data.idRoomNumber+"").emit("clients-get-new-player",{gameFinish:gameFinish,xflag:xflag,listPlayer:arrRoom[data.idRoomNumber][1]});
+        //
+        io.sockets.emit("clients-update-list-room",{arrRoom:arrRoom});//update number Player per rooms
     });
     socket.on("client-send-winner",function(data){
         //
-        if(listPlayer.length>=2){
-            player1Ready = false;player2Ready = false;
-            if(listPlayer[0]==socket.id){
-                io.sockets.emit("server-send-player-go-first",{idPlayer:listPlayer[1]});
+        if(arrRoom[data.idRoomNumber][0].length>=2){
+            //player1Ready = false;player2Ready = false;
+            arrStatusPlayer[data.idRoomNumber][0] = false;
+            arrStatusPlayer[data.idRoomNumber][0] = false;
+            if(arrRoom[data.idRoomNumber][0][0]==socket.id){
+                io.to(data.idRoomNumber+"").emit("server-send-player-go-first",{idPlayer:arrRoom[data.idRoomNumber][0][1]});
             }else{
-                io.sockets.emit("server-send-player-go-first",{idPlayer:listPlayer[0]});
+                io.to(data.idRoomNumber+"").emit("server-send-player-go-first",{idPlayer:arrRoom[data.idRoomNumber][0][0]});
             }
         }
     });
@@ -143,49 +154,61 @@ function delPlayer(idPlayer){
     }
     return vtP;
 }
-function isPlaying(idPlayer,ready){
+function isPlaying(vtP,idPlayer,ready){
     let vt = -1;
-    for(let i=0;i<listPlayer.length;i++){
-        if(listPlayer[i]==idPlayer){
-            vt = i;break;
+    if(vtP!=-1){
+        for(let i=0;i<arrRoom[vtP][0].length;i++){
+            if(arrRoom[vtP][0][i]==idPlayer){
+                vt = i;break;
+            }
+        }
+        if(vt==0){
+            if(ready==true){
+                //player1Ready = true;
+                arrStatusPlayer[vtP][0] = true;
+            }else{
+                //player1Ready = false;
+                arrStatusPlayer[vtP][0] = false;
+            }
+        }else if(vt==1){
+            if(ready==true){
+                //player2Ready = true;
+                arrStatusPlayer[vtP][1] = true;
+            }else{
+                //player2Ready = false;
+                arrStatusPlayer[vtP][1] = false;
+            }
+        }else{
+            vt = -1;
         }
     }
-    if(vt==0){
-        if(ready==true){
-            player1Ready = true;
-        }else{
-            player1Ready = false;
-        }
-    }else if(vt==1){
-        if(ready==true){
-            player2Ready = true;
-        }else{
-            player2Ready = false;
-        }
-    }else{
-        vt = -1;
-    }
-    if(player2Ready == true && player1Ready==true && vt != -1){
+    if(arrStatusPlayer[vtP][0] == true &&
+        arrStatusPlayer[vtP][1] == true && vt != -1){
         return true;
     }else{
         return false;
     }
 }
-function updateDataGame(xflag,x,y){
-    if(xflag==true){
-        arrChess[x][y] = 1;
-    }else{
-        arrChess[x][y] = 0;
+function updateDataGame(vtP,xflag,x,y){
+    if(vtP != -1){
+        if(xflag==true){
+            arrRoom[vtP][2][x][y] = 1;
+        }else{
+            arrRoom[vtP][2][x][y] = 0;
+        }
     }
 }
-function reloadDataGame(){
-    player1Ready = false;
-    player2Ready=false;
+function reloadDataGame(vtP){
+    //player1Ready = false;player2Ready=false;
+    arrStatusPlayer[vtP][0] = false;
+    arrStatusPlayer[vtP][1] = false;
     //reset arr
-    arrChess.slice(0,x);
-    arrChess = new Array(x);
-    for(let i=0;i<x;i++){
-        arrChess[i] = new Array(y); 
+    if(vtP != -1){
+        arrRoom[vtP][2].slice(0,x);
+        arrRoom[vtP][2] = new Array(x);
+        for(let i=0;i<x;i++){
+            arrRoom[vtP][2][i] = new Array(y); 
+        }
     }
 }
 function orderPlayer(idPlayer,vtP){
@@ -196,6 +219,12 @@ function orderPlayer(idPlayer,vtP){
         }
     }
     return vt;
+}
+function createDataChess(vtP){
+    arrRoom[vtP][2] = new Array(x);
+    for(let i=0;i<x;i++){
+        arrRoom[vtP][2][i] = new Array(y); 
+    }
 }
 function checkUsername(username,idPlayer){
     if(username.length > 0 && username.length <= 20 && addUsername(username,idPlayer)==true){

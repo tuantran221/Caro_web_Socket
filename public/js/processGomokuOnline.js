@@ -5,11 +5,14 @@
     let gameStop = true;
     let idRoom = "";
     let listPlayer = [];
+    let listPlayerName = [];
     let unableBtnPlay = true;
     let arrChess = new Array(x);
     let xflag = true;
-    //create socket
-    //let socket = io();//setup socket
+    //event socket
+    $(".btn-leave").click(function(){
+        socket.emit("client-want-leave-room");
+    });
     for(let i=0;i<x;i++){
         arrChess[i] = new Array(y); 
         for(let j=0;j<y;j++){
@@ -18,7 +21,7 @@
                 "class": 'align-items-center pb-2 mb-3 khung-ban-co khung-co'
             }).appendTo('#khung-ban-co-1');
             $("#pos-"+i+"-"+j).click(function() {
-                if(gameFinish==false && checkAlClick(i,j)==true){
+                if(gameFinish==false && gameStop == false && checkAlClick(i,j)==true){
                     sendDataToServer(i,j);
                     findPlayerWin();
                     gameFinish = true;
@@ -27,7 +30,7 @@
         }
     }
     function sendDataToServer(i,j){
-        socket.emit("client-send-locateXO",{xflag:xflag,x:i,y:j});
+        socket.emit("client-send-locateXO",{xflag:xflag,x:i,y:j,idRoomNumber:idRoomNumber});
     }
     function findPlayerWin(){
         let player = -1;
@@ -58,7 +61,7 @@
                 unableBtnPlay = false;
                 setupStart();
                 if(xflag==false){
-                    socket.emit("client-send-winner");
+                    socket.emit("client-send-winner",{idRoomNumber:idRoomNumber});
                 }
             }else{//neu la nguoi xem thi khong can cap nhat len server
                 unableBtnPlay = true;
@@ -72,7 +75,7 @@
                 unableBtnPlay = false;
                 setupStart();
                 if(xflag==true){
-                    socket.emit("client-send-winner");
+                    socket.emit("client-send-winner",{idRoomNumber:idRoomNumber});
                 }
             }else{//neu la nguoi xem thi khong can cap nhat len server
                 unableBtnPlay = true;
@@ -82,64 +85,72 @@
     function checkWin(c,i,j){
         let dem = 0;
         let itemp=i,jtemp=j;
-        //check ngang;
-        while(dem<5){
-            if(arrChess[itemp][jtemp]==c){
-                dem++;
-                jtemp++;
-            }else{
-                break;
+        try {
+            //check ngang;
+            while(dem<5){
+                if(arrChess[itemp][jtemp]==c){
+                    dem++;
+                    jtemp++;
+                }else{
+                    break;
+                }
             }
-        }
-        if(dem>=5){
-            checkLine = 0;
-            return dem;
-        }
-        //check dọc;
-        dem = 0,checkLine = -1;
-        itemp=i,jtemp=j;
-        while(dem<5){
-            if(arrChess[itemp][jtemp]==c){
-                dem++;
-                itemp++;
-            }else{
-                break;
+            if(dem>=5){
+                checkLine = 0;
+                return dem;
             }
-        }
-        if(dem>=5){
-            checkLine = 1;
-            return dem;
-        }
-        //check chéo chính
-        dem = 0;checkLine = -1;
-        itemp=i,jtemp=j;
-        while(dem<5){
-            if(arrChess[itemp][jtemp]==c){
-                dem++;
-                itemp++;jtemp++;
-            }else{
-                break;
+        } catch{}
+        try {
+            //check dọc;
+            dem = 0,checkLine = -1;
+            itemp=i,jtemp=j;
+            while(dem<5){
+                if(arrChess[itemp][jtemp]==c){
+                    dem++;
+                    itemp++;
+                }else{
+                    break;
+                }
             }
-        }
-        if(dem>=5){
-            checkLine = 2;
-            return dem;
-        }
-        //check chéo phụ
-        dem = 0;checkLine = -1;
-        itemp=i,jtemp=j;
-        while(dem<5){
-            if(arrChess[itemp][jtemp]==c){
-                dem++;
-                itemp++;jtemp--;
-            }else{
-                break;
+            if(dem>=5){
+                checkLine = 1;
+                return dem;
             }
-        }
-        if(dem>=5){
-            checkLine = 3;
-            return dem;
-        }
+        } catch{}
+        try {
+            //check chéo chính
+            dem = 0;checkLine = -1;
+            itemp=i,jtemp=j;
+            while(dem<5){
+                if(arrChess[itemp][jtemp]==c){
+                    dem++;
+                    itemp++;jtemp++;
+                }else{
+                    break;
+                }
+            }
+            if(dem>=5){
+                checkLine = 2;
+                return dem;
+            }
+        } catch{}
+        try {
+            //check chéo phụ
+            dem = 0;checkLine = -1;
+            itemp=i,jtemp=j;
+            while(dem<5){
+                if(arrChess[itemp][jtemp]==c){
+                    dem++;
+                    itemp++;jtemp--;
+                }else{
+                    break;
+                }
+            }
+            if(dem>=5){
+                checkLine = 3;
+                return dem;
+            }
+        } catch{}
         //kết thúc
         return dem;
     }
@@ -193,5 +204,5 @@
         $("#btn-ready-gomoku-online").addClass("unready").removeClass("ready");
         $("#btn-ready-gomoku-online").removeClass("btn-warning").addClass("btn-success");
         $("#btn-ready-gomoku-online").text("Sẵn sàng");
-        $(".p-wait-player").text("Đang chờ đối thủ..");
+        $(".p-player-status").text("Đang chờ đối thủ..");
     }

@@ -46,15 +46,9 @@
 .khung-co:hover{
 	background-color: rgb(219, 219, 219) !important;
 }
-.p-wait-player{
+.p-player-status{
 	float: right;
 	padding: 5px;
 	font-weight: bold;
 	margin-bottom: 0px;
-}
-#div-list-player{
-	border: 1px solid gray;
-	width: 200px;
-	margin-top: 5px;
-	height: 200px;
 }
