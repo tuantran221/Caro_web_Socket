@@ -64,9 +64,10 @@ $(document).ready(function(){
     }
 });
 function openRoom(){
+    let tableNumber = idRoomNumber + 1;
     $("#main-list-room").hide();
     $("#main-room").show();
-    $(".title-GO").text("Gomoku Online B"+idRoomNumber);
+    $(".title-GO").text("Gomoku Online B"+tableNumber);
 }
 function leaveRoom(){
     unableJoinRoom = false;
