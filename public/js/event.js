@@ -1,7 +1,3 @@
-$(".nav-link").click(function() {
-    $(".nav-link").removeClass("active");
-    $(this).addClass("active");
-});
 $("#btn-ready-gomoku").click(function(){
     restartGame();
 });
