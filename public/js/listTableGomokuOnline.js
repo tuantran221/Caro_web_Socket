@@ -30,7 +30,7 @@ $(document).ready(function(){
                 openRoom();
                 unableJoinRoom = true;
             }else{
-                alert("Bạn phải đăng nhập trước đã!!");
+                callAlert("danger","Bạn phải đăng nhập trước đã!!");
             }
         })
     }

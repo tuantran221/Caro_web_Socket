@@ -63,64 +63,72 @@ let xflag = true;
     function checkWin(c,i,j){
         let dem = 0;
         let itemp=i,jtemp=j;
-        //check ngang;
-        while(dem<5){
-            if(arrChess[itemp][jtemp]==c){
-                dem++;
-                jtemp++;
-            }else{
-                break;
+        try {
+            //check ngang;
+            while(dem<5){
+                if(arrChess[itemp][jtemp]==c){
+                    dem++;
+                    jtemp++;
+                }else{
+                    break;
+                }
             }
-        }
-        if(dem>=5){
-            checkLine = 0;
-            return dem;
-        }
-        //check dọc;
-        dem = 0,checkLine = -1;
-        itemp=i,jtemp=j;
-        while(dem<5){
-            if(arrChess[itemp][jtemp]==c){
-                dem++;
-                itemp++;
-            }else{
-                break;
+            if(dem>=5){
+                checkLine = 0;
+                return dem;
             }
-        }
-        if(dem>=5){
-            checkLine = 1;
-            return dem;
-        }
-        //check chéo chính
-        dem = 0;checkLine = -1;
-        itemp=i,jtemp=j;
-        while(dem<5){
-            if(arrChess[itemp][jtemp]==c){
-                dem++;
-                itemp++;jtemp++;
-            }else{
-                break;
+        } catch{}
+        try {
+            //check dọc;
+            dem = 0,checkLine = -1;
+            itemp=i,jtemp=j;
+            while(dem<5){
+                if(arrChess[itemp][jtemp]==c){
+                    dem++;
+                    itemp++;
+                }else{
+                    break;
+                }
             }
-        }
-        if(dem>=5){
-            checkLine = 2;
-            return dem;
-        }
-        //check chéo phụ
-        dem = 0;checkLine = -1;
-        itemp=i,jtemp=j;
-        while(dem<5){
-            if(arrChess[itemp][jtemp]==c){
-                dem++;
-                itemp++;jtemp--;
-            }else{
-                break;
+            if(dem>=5){
+                checkLine = 1;
+                return dem;
             }
-        }
-        if(dem>=5){
-            checkLine = 3;
-            return dem;
-        }
+        } catch{}
+        try {
+            //check chéo chính
+            dem = 0;checkLine = -1;
+            itemp=i,jtemp=j;
+            while(dem<5){
+                if(arrChess[itemp][jtemp]==c){
+                    dem++;
+                    itemp++;jtemp++;
+                }else{
+                    break;
+                }
+            }
+            if(dem>=5){
+                checkLine = 2;
+                return dem;
+            }
+        } catch{}
+        try {
+            //check chéo phụ
+            dem = 0;checkLine = -1;
+            itemp=i,jtemp=j;
+            while(dem<5){
+                if(arrChess[itemp][jtemp]==c){
+                    dem++;
+                    itemp++;jtemp--;
+                }else{
+                    break;
+                }
+            }
+            if(dem>=5){
+                checkLine = 3;
+                return dem;
+            }
+        } catch{}
         //kết thúc
         return dem;
     }

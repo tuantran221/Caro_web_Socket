@@ -28,6 +28,7 @@
 	width: 100%;
     height: 60%;
     overflow: auto;
+    background-color: rgb(213, 230, 255);
 }
 #div-player{
 	width: 100%;
@@ -45,16 +46,38 @@
 	width: 100%;
     height: 80%;
     overflow: auto;
+    background-color: rgb(255, 254, 211);
 }
 #div-input-mess-player{
 	width: 100%;
 	height: 20%;
+}
+.fa-paper-plane{
+    color: rgb(11, 117, 103);
 }
 .my-table-name-p{
 	text-align: center;
 }
 .my-main{
 	margin-left: 16% !important;
+}
+#input-mess{
+    height: 100%;
+    width: 80%;
+    padding-left: 5px;
+    padding-right: 5px;
+    border: none;
+    border-right: 1px solid grey;
+}
+#btn-send-mess{
+    height: 100%;
+    width: 18.6%;
+    background-color: white;
+    border: none;
+}
+.text-mess{
+    padding: 0 5px 0 5px;
+    margin-bottom: 5px;
 }
 @media only screen and (max-width: 767px) {
     .my-main{

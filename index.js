@@ -1,3 +1,4 @@
+const { text } = require("express");
 var express = require("express");
 var app = express();
 app.use(express.static("public"));
@@ -75,6 +76,12 @@ io.on("connection",function(socket){
             io.sockets.emit("clients-update-list-room",{arrRoom:arrRoom});//update number Player per rooms
         }
         socket.emit("server-send-leave-room-success");
+    });
+    socket.on("client-send-mess",function(data){
+        ordPlayer = orderPlayer(socket.id,data.idRoomNumber);
+        io.to(data.idRoomNumber+"").emit("clients-get-mess",{
+            username:arrRoom[data.idRoomNumber][1][ordPlayer],
+            text:data.text});
     });
     socket.on("disconnect",function(){
         //
@@ -213,9 +220,11 @@ function reloadDataGame(vtP){
 }
 function orderPlayer(idPlayer,vtP){
     let vt=-1;
-    for(let i=0;i<arrRoom[vtP][0].length;i++){
-        if(idPlayer == arrRoom[vtP][0][i]){
-            vt = i;break;
+    if(vtP!=-1){
+        for(let i=0;i<arrRoom[vtP][0].length;i++){
+            if(idPlayer == arrRoom[vtP][0][i]){
+                vt = i;break;
+            }
         }
     }
     return vt;

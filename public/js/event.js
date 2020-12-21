@@ -54,21 +54,6 @@ socket.on("server-send-data-for-all",function(data){
             findPlayerWin();
         }
 });
-/*socket.on("client-get-player",function(data){
-    gameFinish = data.gameFinish;
-    listPlayer = data.listPlayer;
-    if(isWatchOnly(socket.id)==false){
-        checkPlayer();
-    }else{
-        watchOnlyStatus();
-        socket.emit("client-request-datagame");
-    }
-    if(gameFinish==false){
-        xflag = true;
-    }else{
-        xflag = false;
-    }
-});*/
 socket.on("clients-get-new-player",function(data){
     listPlayer = data.listPlayer;
     listPlayerName = data.listPlayerName;
@@ -249,3 +234,19 @@ function reloadGame(idPlayer){
     }
     checkPlayer();
 }
+function callAlert(nameNotice,text){
+    $(function() {
+      const Toast = Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000
+      });
+      $(function(){
+        Toast.fire({
+          icon: nameNotice,
+          title: text,
+        })
+      });
+    });
+  }
