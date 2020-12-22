@@ -38,6 +38,11 @@ socket.on("server-send-data-for-all",function(data){
                     gameFinish = false;
                 }
             }
+            if(gameFinish==true){
+                $(".p-player-status").text("Lượt đối thủ..");
+            }else{
+                $(".p-player-status").text("Lượt của bạn..");
+            }
             findPlayerWin();
         }else{//
             if(data.xflag == true){
@@ -145,10 +150,12 @@ function playingStatus(){
     unableBtnPlay = true;
     if(xflag == true){
             gameFinish = false;
+            $(".p-player-status").text("Lượt của bạn..");
     }else{
         gameFinish = true;
+        $(".p-player-status").text("Lượt đối thủ..");
     }
-    $(".p-player-status").text("Đang chơi..");
+    //$(".p-player-status").text("Đang chơi..");
 }
 function findPlayerStatus(){
     unableBtnPlay = true;
