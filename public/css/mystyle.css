@@ -40,7 +40,7 @@
 	height: 5.11%;
 	position: static;
 	float: left;
-	background-size: 19px 19px;
+	background-size: contain;
 	cursor: pointer;
 }
 .khung-co:hover{
