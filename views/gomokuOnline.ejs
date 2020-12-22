@@ -2,9 +2,12 @@
 <html lang="en">
   <%- include('masterPage/head.ejs'); -%>
   <body>
+    <!--loading-->
+    <div class="loader"></div>
+
     <%- include('masterPage/narbar.ejs'); -%>
 
-    <div class="container-fluid">
+    <div class="container-fluid screen-container">
       <div class="row">
         
         <%- include('masterPage/left.ejs'); -%>
@@ -164,8 +167,7 @@
                 <!-- ./col -->
             </div>
           </div>
-          <!--<div class="col-sm-4">
-          </div>-->
+          <button id="my-btn">aaaaaaaaaaaaaaaaa</button>
         </main>
         <main id="main-room" style="display: none;" role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4 row">
           <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 col-md-12">
@@ -197,9 +199,8 @@
               </div>
             </div>
           </div>
-          <!--<div class="col-sm-4">
-          </div>-->
         </main>
+        
       </div>
     </div>
     

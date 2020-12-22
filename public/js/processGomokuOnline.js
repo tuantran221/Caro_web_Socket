@@ -13,6 +13,15 @@
     $(".btn-leave").click(function(){
         socket.emit("client-want-leave-room");
     });
+    let dem = 0;
+    $("#my-btn").click(function(){
+        if(dem%2==0){
+            waiting();
+        }else{
+            stopWaiting();
+        }
+        dem++;
+    });
     for(let i=0;i<x;i++){
         arrChess[i] = new Array(y); 
         for(let j=0;j<y;j++){

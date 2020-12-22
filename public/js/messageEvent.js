@@ -1,6 +1,9 @@
 $(document).ready(function(){
+    $(".loader").hide();
     $("#btn-send-mess").click(function(){
         let text = $("#input-mess").val();
+        $("#input-mess").val("");
+        waiting();
         if(checkMessSend(text)==true){
             socket.emit("client-send-mess",{idRoomNumber:idRoomNumber,text:text});
         }
@@ -13,7 +16,7 @@ $(document).ready(function(){
     });
     //event -socket
     socket.on("clients-get-mess",function(data){
-        $("#input-mess").val("");
+        stopWaiting();
         updateMessBox(data.username,data.text);
     });
     function checkMessSend(text){

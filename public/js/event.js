@@ -253,3 +253,11 @@ function callAlert(nameNotice,text){
       });
     });
   }
+  function waiting(){
+    $(".screen-container").css("opacity",0.3);
+    $(".loader").show();
+  }
+  function stopWaiting(){
+    $(".screen-container").css("opacity",1);
+    $(".loader").hide();
+  }
