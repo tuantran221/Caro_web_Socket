@@ -39,6 +39,7 @@
         }
     }
     function sendDataToServer(i,j){
+        waiting();
         socket.emit("client-send-locateXO",{xflag:xflag,x:i,y:j,idRoomNumber:idRoomNumber});
     }
     function findPlayerWin(){

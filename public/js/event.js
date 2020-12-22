@@ -19,6 +19,7 @@ $("#btn-ready-gomoku-online").click(function(){
     }
 });
 socket.on("server-send-data-for-all",function(data){
+    stopWaiting();
     let i=data.x,j=data.y;
         if(isWatchOnly(socket.id)==false){
             if(data.xflag == true){
@@ -254,7 +255,7 @@ function callAlert(nameNotice,text){
     });
   }
   function waiting(){
-    $(".screen-container").css("opacity",0.3);
+    $(".screen-container").css("opacity",0.8);
     $(".loader").show();
   }
   function stopWaiting(){
