@@ -69,6 +69,61 @@
     border: none;
     border-right: 1px solid grey;
 }
+#khung-ban-co-1{
+	border-right: none;
+	border-bottom: none;
+}
+#btn-sign-in{
+	cursor: pointer;
+}
+.khung-ban-co{
+	background-color: white;
+	border: solid 0.5px gray;
+	width: 501px;
+	height: 390px;
+	text-align: center;
+	position: relative;
+}
+.notice-result{
+	display: none;
+	position: absolute;
+	opacity: 1 !important;
+    top: 40%;
+	left: 170px;
+	cursor: default;
+}
+.notice-error{
+	color: rgb(185, 14, 14);
+	margin-bottom: 0px;
+	padding-top: 5px;
+	display: none;
+}
+.div-option{
+	position: absolute;
+	top: 0;
+	left: 540px;
+}
+.khung-co{
+	margin-bottom: 0px !important;
+	border-top: none;
+	border-left: none;
+	width: 4%;
+	height: 5.11%;
+	position: static;
+	float: left;
+	background-size: contain;
+	cursor: pointer;
+}
+.khung-co:hover{
+	background-color: rgb(219, 219, 219) !important;
+}
+.p-player-status{
+	float: right;
+	padding: 5px;
+	font-weight: bold;
+	margin-bottom: 0px;
+	color: gray;
+}
 #btn-send-mess{
     height: 100%;
     width: 18.6%;

@@ -21,6 +21,7 @@ $(document).ready(function(){
     });
     function checkMessSend(text){
         if(text==""){
+            stopWaiting();
             return false;
         }else{
             return true;

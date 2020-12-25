@@ -10,11 +10,14 @@ server.listen(process.env.PORT || 3000);
 app.get("/playonlinegomoku",function(req,res){
     res.render("gomokuOnline",{page:"gomokuOnline"});
 });
+app.get("/xiangqi",function(req,res){
+    res.render("xiangqi",{page:"xiangqi"});
+});
 app.get("/listtablegomokuonline",function(req,res){
     res.render("listTableGomokuOnline",{page:"listTableGomokuOnline"});
 });
 app.get("/",function(req,res){
-    res.render("trangchu",{page:"gomoku2Player"});
+    res.render("gomoku",{page:"gomoku2Player"});
 });
 //io
 let listPlayer = [];

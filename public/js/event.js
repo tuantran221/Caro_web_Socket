@@ -98,6 +98,7 @@ socket.on("server-send-leave-room-success",function(data){
 socket.on("client-get-datagame",function(data){
     arrChess = data.arrChess;
     loadDataGame();
+    stopWaiting();
 });
 socket.on("server-send-player-go-first",function(data){
     if(data.idPlayer == socket.id){
