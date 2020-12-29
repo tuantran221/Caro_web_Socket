@@ -68,12 +68,12 @@ function chessMove(newX,newY){
           }, CHESSMOVETIME, function() {
             // Animation complete.
             //isWin(newX,newY);
-            switchPos(newX,newY);
+            /*switchPos(newX,newY);
             arrChess[newX][newY] = arrChess[oldX][oldY];
             arrChess[oldX][oldY] = "";
             $("#pos-"+oldX+"-"+oldY).show();
             $("#pos-hide").hide();
-            oldX=-1;oldY=-1;
+            oldX=-1;oldY=-1;*/
         });
 }
 function sleep (time) {
