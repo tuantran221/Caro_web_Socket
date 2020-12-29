@@ -67,14 +67,21 @@ function chessMove(newX,newY){
             left: newY*DISTANCECHESS
           }, CHESSMOVETIME, function() {
             // Animation complete.
-            isWin(newX,newY);
+            /*isWin(newX,newY);
             switchPos(newX,newY);
             arrChess[newX][newY] = arrChess[oldX][oldY];
             arrChess[oldX][oldY] = "";
-            $("#pos-hide").hide();
             $("#pos-"+oldX+"-"+oldY).show();
-            oldX=-1;oldY=-1;
+            $("#pos-hide").hide();
+            oldX=-1;oldY=-1;*/
         });
+        isWin(newX,newY);
+            switchPos(newX,newY);
+            arrChess[newX][newY] = arrChess[oldX][oldY];
+            arrChess[oldX][oldY] = "";
+            $("#pos-"+oldX+"-"+oldY).show();
+            $("#pos-hide").hide();
+            oldX=-1;oldY=-1;
 }
 function sleep (time) {
         return new Promise((resolve) => setTimeout(resolve, time));
