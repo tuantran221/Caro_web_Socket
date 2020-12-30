@@ -72,7 +72,7 @@ function chessMove(newX,newY){
             arrChess[newX][newY] = arrChess[oldX][oldY];
             arrChess[oldX][oldY] = "";
             $("#pos-"+oldX+"-"+oldY).show();
-            $("#pos-hide").hide();
+            //$("#pos-hide").hide();
             oldX=-1;oldY=-1;
         });
 }
