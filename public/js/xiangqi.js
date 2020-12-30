@@ -1,7 +1,7 @@
 //xu ly ban co
 const x = 10,y=9;
 const DISTANCECHESS = 57;
-const CHESSMOVETIME = 300;
+const CHESSMOVETIME = 3000;
 let gameFinish = false;
 let flagColor = "red";
 let oldX=-1,oldY=-1;
@@ -67,21 +67,14 @@ function chessMove(newX,newY){
             left: newY*DISTANCECHESS
           }, CHESSMOVETIME, function() {
             // Animation complete.
-            /*isWin(newX,newY);
-            switchPos(newX,newY);
-            arrChess[newX][newY] = arrChess[oldX][oldY];
-            arrChess[oldX][oldY] = "";
-            $("#pos-"+oldX+"-"+oldY).show();
-            $("#pos-hide").hide();
-            oldX=-1;oldY=-1;*/
-        });
-        isWin(newX,newY);
+            isWin(newX,newY);
             switchPos(newX,newY);
             arrChess[newX][newY] = arrChess[oldX][oldY];
             arrChess[oldX][oldY] = "";
             $("#pos-"+oldX+"-"+oldY).show();
             $("#pos-hide").hide();
             oldX=-1;oldY=-1;
+        });
 }
 function sleep (time) {
         return new Promise((resolve) => setTimeout(resolve, time));
