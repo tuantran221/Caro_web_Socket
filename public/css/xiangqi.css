@@ -4,6 +4,12 @@
 #btn-sign-in{
 	cursor: pointer;
 }
+#btn-ready-xiangqi{
+	float: left;
+}
+.div-option{
+    width: 300px;
+}
 .khung-ban-co{
 	background-color: transparent;
 	border: solid 0.5px gray;
@@ -48,8 +54,8 @@
 .quan-co:hover{
 	/*border: 1px solid grey;*/
 }
-.p-player-status{
-	float: right;
+#p-player-status{
+	float: left;
 	padding: 5px;
 	font-weight: bold;
 	margin-bottom: 0px;

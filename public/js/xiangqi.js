@@ -1,7 +1,7 @@
 //xu ly ban co
 const x = 10,y=9;
 const DISTANCECHESS = 57;
-const CHESSMOVETIME = 3000;
+const CHESSMOVETIME = 300;
 let gameFinish = false;
 let flagColor = "red";
 let oldX=-1,oldY=-1;
@@ -72,7 +72,7 @@ function chessMove(newX,newY){
             arrChess[newX][newY] = arrChess[oldX][oldY];
             arrChess[oldX][oldY] = "";
             $("#pos-"+oldX+"-"+oldY).show();
-            //$("#pos-hide").hide();
+            $("#pos-hide").hide();
             oldX=-1;oldY=-1;
         });
 }
@@ -352,11 +352,11 @@ function generalCanMove(newX,newY){
 function isWin(newX,newY){
     if(arrChess[newX][newY].indexOf("general-red")>=0){
         gameStop = true;
-        alert("Cờ đen thắng");
+        $("#p-player-status").text("Cờ đen thắng");
         return false;
     }else if(arrChess[newX][newY].indexOf("general-black")>=0){
         gameStop = true;
-        alert("Cờ đỏ thắng");
+        $("#p-player-status").text("Cờ đỏ thắng");
         return true;
     }
     return false;
