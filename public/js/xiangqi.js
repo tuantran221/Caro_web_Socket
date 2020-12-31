@@ -353,10 +353,12 @@ function isWin(newX,newY){
     if(arrChess[newX][newY].indexOf("general-red")>=0){
         gameStop = true;
         $("#p-player-status").text("Cờ đen thắng");
+        $("#khung-ban-co-2").css('opacity', '0.6');
         return false;
     }else if(arrChess[newX][newY].indexOf("general-black")>=0){
         gameStop = true;
         $("#p-player-status").text("Cờ đỏ thắng");
+        $("#khung-ban-co-2").css('opacity', '0.6');
         return true;
     }
     return false;
@@ -368,6 +370,8 @@ function restartGame(){
         for(let i=0;i<x;i++){
             arrChess[i] = new Array(y).fill("");
         }
+    $("#khung-ban-co-2").css('opacity', '1');
+    $("#p-player-status").text("");
         setupChessmans();
         $("#khung-ban-co-2").html("");
         jQuery('<div/>', {
