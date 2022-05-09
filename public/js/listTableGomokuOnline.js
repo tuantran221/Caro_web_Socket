@@ -6,7 +6,7 @@ $(document).ready(function(){
     //
     let roomNum = 12;
     let arrRoom = [];
-    $(".table-image").attr("src", "../Images/tables/table-0.png");
+    $(".table-image").attr("src", "../Images/tables/private-room-1.png");
     socket.emit("client-join-room",{idRoomNumber:idRoomNumber,username:username});
     $("#btn-submit-login").click(function(){
         username = $("#username-input").val();
@@ -67,7 +67,7 @@ function openRoom(){
     let tableNumber = idRoomNumber + 1;
     $("#main-list-room").hide();
     $("#main-room").show();
-    $(".title-GO").text("Gomoku Online B"+tableNumber);
+    $(".title-GO").text(" Room B"+tableNumber);
 }
 function leaveRoom(){
     unableJoinRoom = false;

@@ -7,7 +7,7 @@ app.set("views","./views");
 var server = require("http").Server(app);
 var io = require("socket.io")(server);
 server.listen(process.env.PORT || 3000);
-app.get("/playonlinegomoku",function(req,res){
+app.get("/playcaro",function(req,res){
     res.render("gomokuOnline",{page:"gomokuOnline"});
 });
 app.get("/xiangqi",function(req,res){
